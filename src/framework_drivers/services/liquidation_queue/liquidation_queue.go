@@ -87,17 +87,19 @@ func (SLiquidationQueueService) QueuePaymentOrdersSendConsumer(consumer ILiquida
 	conn, err := amqp.Dial(HOST)
 	if err != nil {
 		fmt.Println("Failed Initializing Broker Connection")
-		panic(err)
+		return err
 	}
 
 	ch, err := conn.Channel()
 	if err != nil {
 		fmt.Println(err)
+		return err
 	}
 	defer ch.Close()
 
 	if err != nil {
 		fmt.Println(err)
+		return err
 	}
 
 	msgs, err := ch.Consume(
@@ -117,13 +119,16 @@ func (SLiquidationQueueService) QueuePaymentOrdersSendConsumer(consumer ILiquida
 			var obj entity.TransferEntity
 			if err := json.Unmarshal(d.Body, &obj); err != nil {
 				d.Nack(false, true)
+				fmt.Println(err)
 			}
 			err = consumer.SendToLiquidation(&obj)
 			if err != nil {
 				d.Nack(false, true)
+				fmt.Println(err)
 			}
 			if err == nil {
 				d.Ack(false)
+				fmt.Printf("Success Consume Message: %s\n", d.Body)
 			}
 		}
 	}()
