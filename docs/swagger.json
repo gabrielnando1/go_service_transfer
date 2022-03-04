@@ -1,0 +1,112 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/transfer/receive": {
+            "post": {
+                "description": "endpoint for  transfer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transfer"
+                ],
+                "summary": "transfer",
+                "parameters": [
+                    {
+                        "description": "transfer request",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto_transfer_request.TransferReceiveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "desc",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto_common_response.GenericResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "$ref": "#/definitions/dto_transfer_response.TransferReceiveResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto_common_response.GenericResponse": {
+            "type": "object",
+            "properties": {
+                "content": {},
+                "error_message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto_transfer_request.TransferReceiveRequest": {
+            "type": "object",
+            "properties": {
+                "account_from": {
+                    "type": "string"
+                },
+                "account_target": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "expected_on": {
+                    "type": "string"
+                },
+                "expiration_date": {
+                    "type": "string"
+                },
+                "external_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto_transfer_response.TransferReceiveResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "internal_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

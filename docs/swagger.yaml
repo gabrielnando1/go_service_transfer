@@ -1,0 +1,69 @@
+definitions:
+  dto_common_response.GenericResponse:
+    properties:
+      content: {}
+      error_message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto_transfer_request.TransferReceiveRequest:
+    properties:
+      account_from:
+        type: string
+      account_target:
+        type: string
+      amount:
+        type: number
+      expected_on:
+        type: string
+      expiration_date:
+        type: string
+      external_id:
+        type: string
+    type: object
+  dto_transfer_response.TransferReceiveResponse:
+    properties:
+      id:
+        type: string
+      internal_id:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/transfer/receive:
+    post:
+      consumes:
+      - application/json
+      description: endpoint for  transfer
+      parameters:
+      - description: transfer request
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto_transfer_request.TransferReceiveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: desc
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto_common_response.GenericResponse'
+            - properties:
+                content:
+                  $ref: '#/definitions/dto_transfer_response.TransferReceiveResponse'
+              type: object
+      summary: transfer
+      tags:
+      - Transfer
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
