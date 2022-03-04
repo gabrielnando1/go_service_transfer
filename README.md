@@ -11,6 +11,9 @@
     - /go_service_transfer/src/framework_drivers/services/liquidation_api/liquidation_api_service.go
 
 
+* Alterar a varivel HOST para endereço RabbitMQ no arquivo: 
+    - /go_service_transfer/src/framework_drivers/services/liquidation_queue/liquidation_queue.go
+
 
 
 * Execução do arquivo de test executar comando:    

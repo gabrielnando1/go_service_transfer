@@ -37,16 +37,49 @@ func (STransferBO) Receive(transfer *entity.TransferEntity) (*entity.TransferEnt
 			Err: errors.New("Invalid data Transfer: Date expirated"),
 		}
 	}
+
+	transfer.Status = &[]string{"PROCESSING"}[0]
 	var err error
 	transfer, err = repository.NoSQL.TransferRepository.Save(transfer)
 	if err != nil {
 		return nil, errors.New("unexpected error")
 	}
 
-	transfer, err = services.Service().LiquidationApi.PaymentOrdersSend(transfer)
+	/*
+		transfer, err = services.Service().LiquidationApi.PaymentOrdersSend(transfer)
+	*/
+	transfer, err = services.Service().LiquidationQueue.QueuePaymentOrdersSendPublisher(transfer)
 	if err != nil {
 		return nil, err
 	}
-	transfer, err = repository.NoSQL.TransferRepository.Save(transfer)
+
 	return transfer, nil
+}
+
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+func (STransferBO) SendToLiquidation(transfer *entity.TransferEntity) error {
+	if transfer == nil || transfer.AccountFrom == nil || transfer.AccountTarget == nil || transfer.ExpirationDate == nil || transfer.Amount == nil {
+		return &custom_errors.BadRequestError{
+			Err: errors.New("Invalid data Transfer"),
+		}
+	}
+
+	if (*transfer.ExpirationDate).Before(time.Now()) {
+		return &custom_errors.BadRequestError{
+			Err: errors.New("Invalid data Transfer: Date expirated"),
+		}
+	}
+
+	var err error
+	transfer, err = services.Service().LiquidationApi.PaymentOrdersSend(transfer)
+	if err != nil {
+		return errors.New("unexpected error")
+	}
+	transfer, err = repository.NoSQL.TransferRepository.Save(transfer)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
