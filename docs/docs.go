@@ -68,6 +68,40 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/paymentOrders": {
+            "patch": {
+                "description": "endpoint for  liquidation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Liquidation"
+                ],
+                "summary": "transfer",
+                "parameters": [
+                    {
+                        "description": "liquidation request",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto_liquidation_request.LiquidationReceiveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "desc",
+                        "schema": {
+                            "$ref": "#/definitions/dto_liquidation_response.LiquidationReceiveResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -80,6 +114,31 @@ var doc = `{
                 },
                 "success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "dto_liquidation_request.LiquidationReceiveRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "expectedOn": {
+                    "type": "string"
+                },
+                "externalId": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto_liquidation_response.LiquidationReceiveResponse": {
+            "type": "object",
+            "properties": {
+                "internalId": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },

@@ -2,6 +2,7 @@ package mappers
 
 import (
 	"sync"
+	"time"
 
 	entity "github.com/gabrielnando1/go_service_transfer/src/entity"
 	dto_transfer_request "github.com/gabrielnando1/go_service_transfer/src/presenter/api/dto/transfer/request"
@@ -31,8 +32,8 @@ func (STransferMapper) TransferRequestReceiveToEnty(request *dto_transfer_reques
 			AccountFrom:   request.AccountFrom,
 			AccountTarget: request.AccountTarget,
 			//Amount:         request.Amount,
-			ExpirationDate: request.ExpirationDate,
-			ExpectedOn:     request.ExpectedOn,
+			ExpirationDate: &[]time.Time{request.ExpirationDate.ToTime()}[0],
+			ExpectedOn:     &[]time.Time{request.ExpectedOn.ToTime()}[0],
 		}
 		if request.Amount != nil {
 			obj.Amount = &[]int64{int64((*request.Amount) * 100)}[0]

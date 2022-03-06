@@ -7,6 +7,22 @@ definitions:
       success:
         type: boolean
     type: object
+  dto_liquidation_request.LiquidationReceiveRequest:
+    properties:
+      amount:
+        type: integer
+      expectedOn:
+        type: string
+      externalId:
+        type: string
+    type: object
+  dto_liquidation_response.LiquidationReceiveResponse:
+    properties:
+      internalId:
+        type: string
+      status:
+        type: string
+    type: object
   dto_transfer_request.TransferReceiveRequest:
     properties:
       account_from:
@@ -61,6 +77,28 @@ paths:
       summary: transfer
       tags:
       - Transfer
+  /paymentOrders:
+    patch:
+      consumes:
+      - application/json
+      description: endpoint for  liquidation
+      parameters:
+      - description: liquidation request
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto_liquidation_request.LiquidationReceiveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: desc
+          schema:
+            $ref: '#/definitions/dto_liquidation_response.LiquidationReceiveResponse'
+      summary: transfer
+      tags:
+      - Liquidation
 securityDefinitions:
   BearerAuth:
     in: header

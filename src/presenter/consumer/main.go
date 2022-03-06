@@ -3,6 +3,7 @@ package consumer
 import (
 	entity "github.com/gabrielnando1/go_service_transfer/src/entity"
 	controllers "github.com/gabrielnando1/go_service_transfer/src/presenter/api/controllers"
+	"github.com/gin-gonic/gin"
 
 	services "github.com/gabrielnando1/go_service_transfer/src/framework_drivers/services"
 	services_liquidation_queue "github.com/gabrielnando1/go_service_transfer/src/framework_drivers/services/liquidation_queue"
@@ -26,8 +27,12 @@ func (SLiquidationQueueServiceConsumer) SendToLiquidation(transfer *entity.Trans
 }
 
 func StartConsumer() {
-	go func() {
-		services.Service().LiquidationQueue.QueuePaymentOrdersSendConsumer(QueueServiceConsumer())
-	}()
+	//go func() {
+	services.Service().LiquidationQueue.QueuePaymentOrdersSendConsumer(QueueServiceConsumer())
+	//}()
+	router := gin.Default()
+	//router.GET("/albums", getAlbums)
+
+	router.Run(":8001")
 
 }

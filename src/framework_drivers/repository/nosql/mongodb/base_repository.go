@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 	"time"
@@ -24,8 +25,11 @@ var (
 )
 
 func getCLient() *mongo.Client {
+	url := os.Getenv("MONGO_URL")
 	if client == nil {
-		client, _ = mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+		//client, _ = mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+		client, _ = mongo.Connect(context.TODO(), options.Client().ApplyURI(url))
+		//client, _ = mongo.Connect(context.TODO(), options.Client().ApplyURI(url))
 	}
 	return client
 }

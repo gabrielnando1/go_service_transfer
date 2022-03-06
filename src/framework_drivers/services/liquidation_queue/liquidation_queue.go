@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"log"
 
+	"os"
+
 	"github.com/streadway/amqp"
 
 	entity "github.com/gabrielnando1/go_service_transfer/src/entity"
 )
 
 var (
-	HOST       = "amqp://user:pass@localhost:port"
+	HOST       = os.Getenv("RABBIT_URL") //"amqp://user:pass@localhost:port"
 	QUEUE_NAME = "liquidation_queue"
 )
 
@@ -87,7 +89,8 @@ func (SLiquidationQueueService) QueuePaymentOrdersSendConsumer(consumer ILiquida
 	conn, err := amqp.Dial(HOST)
 	if err != nil {
 		fmt.Println("Failed Initializing Broker Connection")
-		return err
+		panic(err)
+		//return err
 	}
 
 	ch, err := conn.Channel()

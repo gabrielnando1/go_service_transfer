@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	api "github.com/gabrielnando1/go_service_transfer/src/presenter/api"
 	consumer "github.com/gabrielnando1/go_service_transfer/src/presenter/consumer"
 )
@@ -9,6 +11,10 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	consumer.StartConsumer()
-	api.StartApi()
+	if os.Getenv("PRESENTER") == "consumer" {
+		consumer.StartConsumer()
+	}
+	if os.Getenv("PRESENTER") != "consumer" {
+		api.StartApi()
+	}
 }

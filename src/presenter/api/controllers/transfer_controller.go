@@ -16,7 +16,7 @@ import (
 )
 
 func transfer_controller(router *gin.RouterGroup) {
-	router.POST("/transfer/receive", TransferController_Receive)
+	router.POST("/api/transfer/receive", TransferController_Receive)
 }
 
 // PingExample godoc

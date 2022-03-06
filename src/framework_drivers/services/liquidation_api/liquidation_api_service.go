@@ -8,13 +8,16 @@ import (
 	"log"
 	"net/http"
 
+	"os"
+
 	entity "github.com/gabrielnando1/go_service_transfer/src/entity"
 	api_request "github.com/gabrielnando1/go_service_transfer/src/framework_drivers/services/liquidation_api/request"
 	api_response "github.com/gabrielnando1/go_service_transfer/src/framework_drivers/services/liquidation_api/response"
+	dto_common "github.com/gabrielnando1/go_service_transfer/src/presenter/api/dto/common"
 )
 
 var (
-	HOST = "http://localhost"
+	HOST = os.Getenv("LIQUIDATION_API_URL")
 )
 
 type ILiquidationApiService interface {
@@ -30,10 +33,13 @@ type SLiquidationApiService struct {
 }
 
 func (SLiquidationApiService) PaymentOrdersSend(transfer *entity.TransferEntity) (*entity.TransferEntity, error) {
+	date := dto_common.JSONDATE{}
+	datetime, _ := transfer.ExpectedOn.MarshalBinary()
+	date.UnmarshalJSON(datetime)
 	payload, err := json.Marshal(api_request.LiquidationApiPaymentOrderSendRequest{
 		ExternalId: transfer.ExternalId,
 		Amount:     transfer.Amount,
-		ExpectedOn: transfer.ExpectedOn,
+		ExpectedOn: &date,
 	})
 	if err != nil {
 		log.Fatal(err)

@@ -1,0 +1,88 @@
+version: '3'
+services:
+  go_service_transfer:
+    build: .
+    image: go_service_transfer
+    container_name: go_service_transfer 
+    environment: 
+      MONGO_URL: mongodb://root:mongopass@go_service_transfer_mongo:27017/admin
+      RABBIT_URL: amqp://guest:guest@go_service_transfer_rabbitmq:5672/
+      LIQUIDATION_API_URL: http://localhost:8000
+      PRESENTER: api
+      PORT: 8000
+    ports:
+      - 8000:8000
+    depends_on:
+      - go_service_transfer_mongo
+      - go_service_transfer_rabbitmq
+    links:
+      - go_service_transfer_mongo  
+      - go_service_transfer_rabbitmq
+    restart: on-failure
+    networks:
+      - fullstack
+
+  consumer:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: go_service_transfer_consumer
+    container_name: go_service_transfer_consumer 
+    environment: 
+      MONGO_URL: mongodb://root:mongopass@go_service_transfer_mongo:27017/admin
+      RABBIT_URL: amqp://guest:guest@go_service_transfer_rabbitmq:5672/
+      LIQUIDATION_API_URL: http://go_service_transfer:8000
+      PRESENTER: consumer
+      PORT: 8001
+    ports:
+      - 8001:8001
+    depends_on:
+      - go_service_transfer_mongo
+      - go_service_transfer_rabbitmq
+      - go_service_transfer
+    links:
+      - go_service_transfer_mongo  
+      - go_service_transfer_rabbitmq
+      - go_service_transfer
+    restart: always
+    networks:
+      - fullstack      
+
+  go_service_transfer_mongo:    
+    image: mongo:latest   
+    container_name: go_service_transfer_mongo 
+    environment:
+      MONGO_INITDB_DATABASE: practice_mongodb
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongopass
+    restart: always
+    ports:
+      - "27016:27017"
+    volumes:
+      - "mongodata:/data/db"
+    tty: true
+    networks:
+      - fullstack
+
+  go_service_transfer_rabbitmq:
+    container_name: "go_service_transfer_rabbitmq"
+    image: rabbitmq:3.8-management-alpine
+    environment:
+        - RABBITMQ_DEFAULT_USER=guest
+        - RABBITMQ_DEFAULT_PASS=guest    
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+        - fullstack      
+
+volumes:
+   mongodata:
+
+networks:
+  fullstack:
+    driver: bridge
+    

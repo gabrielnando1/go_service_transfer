@@ -19,13 +19,14 @@ var (
 
 func Initialize() {
 	docs.SwaggerInfo.BasePath = ""
-	RouterApi = Router.Group("/api")
+	RouterApi = Router.Group("")
 	{
 		RouterApi.Use(gin.Logger())
 		RouterApi.Use(gin.Recovery())
 
 		// Register Controllers
 		transfer_controller(RouterApi)
+		liquidation_controller(RouterApi)
 
 	}
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
