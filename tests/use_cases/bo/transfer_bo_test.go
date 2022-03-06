@@ -32,3 +32,27 @@ func TestTransferExpired(t *testing.T) {
 		}
 	}
 }
+
+func TestTransferAmountZero(t *testing.T) {
+	tomorrow := time.Now().AddDate(0, 0, 1)
+	transfer := &entity.TransferEntity{
+		AccountFrom:    &[]string{"teste"}[0],
+		AccountTarget:  &[]string{"teste"}[0],
+		Amount:         &[]int64{0}[0],
+		ExpirationDate: &tomorrow,
+	}
+	transfer, err := bo.TransferBO().Receive(transfer)
+
+	if err == nil {
+		t.Errorf("validation Amount Zero not working.")
+	}
+	switch err.(type) {
+	default:
+		t.Errorf("validation Amount Zero not working.")
+	case *custom_errors.BadRequestError:
+		error_message := err.Error()
+		if error_message != "Amount can't be zero (0)" {
+			t.Errorf("validation Amount Zero not working.")
+		}
+	}
+}

@@ -32,6 +32,12 @@ func (STransferBO) Receive(transfer *entity.TransferEntity) (*entity.TransferEnt
 		}
 	}
 
+	if *transfer.Amount == 0 {
+		return nil, &custom_errors.BadRequestError{
+			Err: errors.New("Amount can't be zero (0)"),
+		}
+	}
+
 	if (*transfer.ExpirationDate).Before(time.Now()) {
 		return nil, &custom_errors.BadRequestError{
 			Err: errors.New("Invalid data Transfer: Date expirated"),
